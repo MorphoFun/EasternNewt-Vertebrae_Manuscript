@@ -183,7 +183,8 @@ dimnames(Caud3.LMs) = list(paste0("LM_",1:22), c("x", "y", "z"), Caud3.Samples)
 
 ##**Analyses**
 
-#Generalized Procrustes Analysis (GPA) + Format - Align coordinates and format into a geomorph data frame
+#### Generalized Procrustes Analysis (GPA) ####
+## + Format - Align coordinates and format into a geomorph data frame
 Atlas.gpa <- gpagen(Atlas.LMs)
 Atlas_gdf <- geomorph.data.frame(Shape=Atlas.gpa$coords, ind=Atlas.Samples, Size=log(Atlas.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
@@ -215,7 +216,8 @@ Caud3.gpa <- gpagen(Caud3.LMs)
 Caud3_gdf <- geomorph.data.frame(Shape=Caud3.gpa$coords, ind=Caud3.Samples, Size=log(Caud3.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 
-#Principal Component Analysis (PCA) - Ordinate the dataset
+#### Principal Component Analysis (PCA) ####
+## Ordinate the dataset
 Atlas.PCA<-gm.prcomp(Atlas.gpa$coords)
 summary(Atlas.PCA) 
 
