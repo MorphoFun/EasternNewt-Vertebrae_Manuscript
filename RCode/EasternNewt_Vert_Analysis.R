@@ -3,20 +3,20 @@
 ##**Title: Eastern Newt Vertebrae Analysis
 --
   
-library(geomorph) 
-library(SlicerMorphR) 
-library(shapes)
-library(ellipsis)
-library(ggplot2)
-library(tidyverse)
-library(MASS)
-library(caret)
-library(patchwork)
-library(knitr)
-library(ggpubr)
+#### Load libraries (and install, if needed) ####
+
+pkgs <- c('geomorph', 'SlicerMorphR', 'shapes', 'ellipsis', 'ggplot2',
+               'MASS', 'caret', 'patchwork', 'knitr', 'ggpubr', 'vegan')
+
+for (i in pkgs) {
+  if(!require(i, character.only = TRUE)) {
+    install.packages(i)
+    library(i)
+  }
+}
 
 
-##**Data Import and Format**
+#### Data Import and Formatting ####
 
 lifestage<-factor(c("Adult", "Adult", "Adult", "Adult", "Adult", "Adult",  
                     "Eft", "Eft", "Eft", "Eft", "Eft", "Eft", "Eft",  
@@ -38,6 +38,24 @@ subspecies<-factor(c("N. v. viridescens", "N. v. viridescens", "N. v. viridescen
                      "N. v. louisianensis", "N. v. louisianensis", "N. v. louisianensis", "N. v. louisianensis", 
                      "N. v. louisianensis", "N. v. louisianensis", "N. v. piaropicola", "N. v. piaropicola", 
                      "N. v. piaropicola", "N. v. piaropicola", "N. v. piaropicola"))
+
+habitat <- factor(c("Semi-aquatic", "Semi-aquatic", "Semi-aquatic", "Semi-aquatic", "Semi-aquatic", "Semi-aquatic",  
+                    "Terrestrial", "Terrestrial", "Terrestrial", "Terrestrial", "Terrestrial", "Terrestrial", "Terrestrial",  
+                    "Semi-aquatic", "Semi-aquatic", "Semi-aquatic", "Terrestrial", "Terrestrial", "Semi-aquatic", "Semi-aquatic",  
+                    "Aquatic", "Aquatic", "Aquatic", "Aquatic", "Aquatic", 
+                    "Aquatic","Aquatic","Aquatic","Aquatic","Aquatic", 
+                    "Semi-aquatic", "Semi-aquatic", "Aquatic",	"Aquatic","Aquatic","Aquatic",	
+                    "Aquatic","Aquatic","Aquatic","Aquatic","Aquatic",	
+                    "Aquatic","Aquatic"))
+
+ageGroup <-factor(c("Adult", "Adult", "Adult", "Adult", "Adult", "Adult",  
+                    "Juvenile", "Juvenile", "Juvenile", "Juvenile", "Juvenile", "Juvenile", "Juvenile",  
+                    "Adult", "Adult", "Adult", "Juvenile", "Juvenile", "Adult", "Adult",  
+                    "Juvenile", "Juvenile", "Juvenile", "Juvenile", "Adult", 
+                    "Adult","Adult","Adult","Adult","Juvenile", 
+                    "Adult", "Adult", "Juvenile",	"Juvenile","Juvenile","Juvenile",	
+                    "Juvenile","Juvenile","Adult","Adult","Adult",	
+                    "Adult","Adult"))
 
 #Caudal 2 has 2 specimens (ID28 & ID45) with haemal arch missing. Caudal 2 Analysis will have it's own 'lifestage' factor
 
@@ -64,7 +82,7 @@ Caud2subspecies<-factor(c("N. v. viridescens", "N. v. viridescens", "N. v. virid
 
 
 #Atlas
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/Atlas - Oriented")
+setwd("./Data/Oriented Fixed Landmarks/Atlas - Oriented")
 files=dir(patt='json')
 Atlas.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -73,7 +91,8 @@ for (i in 1:43) Atlas.LMs[,,i] = read.markups.json(files[i])
 dimnames(Atlas.LMs) = list(paste0("LM_",1:13), c("x", "y", "z"), Atlas.Samples)
 
 #T1
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/T1 - Oriented")
+setwd("../")
+setwd("./T1 - Oriented")
 files=dir(patt='json')
 T1.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -82,7 +101,8 @@ for (i in 1:43) T1.LMs[,,i] = read.markups.json(files[i])
 dimnames(T1.LMs) = list(paste0("LM_",1:19), c("x", "y", "z"), T1.Samples)
 
 #T4
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/T4 - Oriented")
+setwd("../")
+setwd("./T4 - Oriented")
 files=dir(patt='json')
 T4.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -91,7 +111,8 @@ for (i in 1:43) T4.LMs[,,i] = read.markups.json(files[i])
 dimnames(T4.LMs) = list(paste0("LM_",1:19), c("x", "y", "z"), T4.Samples)
 
 #T7
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/T7 - Oriented")
+setwd("../")
+setwd("./T7 - Oriented")
 files=dir(patt='json')
 T7.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -100,7 +121,8 @@ for (i in 1:43) T7.LMs[,,i] = read.markups.json(files[i])
 dimnames(T7.LMs) = list(paste0("LM_",1:19), c("x", "y", "z"), T7.Samples)
 
 #T10
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/T10 - Oriented")
+setwd("../")
+setwd("./T10 - Oriented")
 files=dir(patt='json')
 T10.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -109,7 +131,8 @@ for (i in 1:43) T10.LMs[,,i] = read.markups.json(files[i])
 dimnames(T10.LMs) = list(paste0("LM_",1:19), c("x", "y", "z"), T10.Samples)
 
 #T13
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/T13 - Oriented")
+setwd("../")
+setwd("./T13 - Oriented")
 files=dir(patt='json')
 T13.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -118,7 +141,8 @@ for (i in 1:43) T13.LMs[,,i] = read.markups.json(files[i])
 dimnames(T13.LMs) = list(paste0("LM_",1:19), c("x", "y", "z"), T13.Samples)
 
 #Sacral
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/Sacral - Oriented")
+setwd("../")
+setwd("./Sacral - Oriented")
 files=dir(patt='json')
 Sacral.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -127,7 +151,8 @@ for (i in 1:43) Sacral.LMs[,,i] = read.markups.json(files[i])
 dimnames(Sacral.LMs) = list(paste0("LM_",1:19), c("x", "y", "z"), Sacral.Samples)
 
 #Caudal 1
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/Caud1 - Oriented")
+setwd("../")
+setwd("./Caudal 1 - Oriented")
 files=dir(patt='json')
 Caud1.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -136,7 +161,8 @@ for (i in 1:43) Caud1.LMs[,,i] = read.markups.json(files[i])
 dimnames(Caud1.LMs) = list(paste0("LM_",1:19), c("x", "y", "z"), Caud1.Samples)
 
 #Caudal 2
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/Caud2 - Oriented")
+setwd("../")
+setwd("./Caudal 2 - Oriented")
 files=dir(patt='json')
 Caud2.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -145,7 +171,8 @@ for (i in 1:41) Caud2.LMs[,,i] = read.markups.json(files[i])
 dimnames(Caud2.LMs) = list(paste0("LM_",1:22), c("x", "y", "z"), Caud2.Samples)
 
 #Caudal 3
-setwd("F:/Eastern Newt Project/Vertebrae_Analysis_Corrections/Oriented Fixed Landmarks/Caud3 - Oriented")
+setwd("../")
+setwd("./Caudal 3 - Oriented")
 files=dir(patt='json')
 Caud3.Samples= gsub(".mrk.json", '', fixed=T, files)
 
@@ -158,34 +185,34 @@ dimnames(Caud3.LMs) = list(paste0("LM_",1:22), c("x", "y", "z"), Caud3.Samples)
 
 #Generalized Procrustes Analysis (GPA) + Format - Align coordinates and format into a geomorph data frame
 Atlas.gpa <- gpagen(Atlas.LMs)
-Atlas_gdf <- geomorph.data.frame(Shape=Atlas.gpa$coords, ind=Atlas.Samples, Size=log(Atlas.gpa$Csize), lifestage=lifestage)
+Atlas_gdf <- geomorph.data.frame(Shape=Atlas.gpa$coords, ind=Atlas.Samples, Size=log(Atlas.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 T1.gpa <- gpagen(T1.LMs)
-T1_gdf <- geomorph.data.frame(Shape=T1.gpa$coords, ind=T1.Samples, Size=log(T1.gpa$Csize), lifestage=lifestage)
+T1_gdf <- geomorph.data.frame(Shape=T1.gpa$coords, ind=T1.Samples, Size=log(T1.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 T4.gpa <- gpagen(T4.LMs)
-T4_gdf <- geomorph.data.frame(Shape=T4.gpa$coords, ind=T4.Samples, Size=log(T4.gpa$Csize), lifestage=lifestage)
+T4_gdf <- geomorph.data.frame(Shape=T4.gpa$coords, ind=T4.Samples, Size=log(T4.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 T7.gpa <- gpagen(T7.LMs)
-T7_gdf <- geomorph.data.frame(Shape=T7.gpa$coords, ind=T7.Samples, Size=log(T7.gpa$Csize), lifestage=lifestage)
+T7_gdf <- geomorph.data.frame(Shape=T7.gpa$coords, ind=T7.Samples, Size=log(T7.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 T10.gpa <- gpagen(T10.LMs)
-T10_gdf <- geomorph.data.frame(Shape=T10.gpa$coords, ind=T10.Samples, Size=log(T10.gpa$Csize), lifestage=lifestage)
+T10_gdf <- geomorph.data.frame(Shape=T10.gpa$coords, ind=T10.Samples, Size=log(T10.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 T13.gpa <- gpagen(T13.LMs)
-T13_gdf <- geomorph.data.frame(Shape=T13.gpa$coords, ind=T13.Samples, Size=log(T13.gpa$Csize), lifestage=lifestage)
+T13_gdf <- geomorph.data.frame(Shape=T13.gpa$coords, ind=T13.Samples, Size=log(T13.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 Sacral.gpa <- gpagen(Sacral.LMs)
-Sacral_gdf <- geomorph.data.frame(Shape=Sacral.gpa$coords, ind=Sacral.Samples, Size=log(Sacral.gpa$Csize), lifestage=lifestage)
+Sacral_gdf <- geomorph.data.frame(Shape=Sacral.gpa$coords, ind=Sacral.Samples, Size=log(Sacral.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 Caud1.gpa <- gpagen(Caud1.LMs)
-Caud1_gdf <- geomorph.data.frame(Shape=Caud1.gpa$coords, ind=Caud1.Samples, Size=log(Caud1.gpa$Csize), lifestage=lifestage)
+Caud1_gdf <- geomorph.data.frame(Shape=Caud1.gpa$coords, ind=Caud1.Samples, Size=log(Caud1.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 Caud2.gpa <- gpagen(Caud2.LMs)
 Caud2_gdf <- geomorph.data.frame(Shape=Caud2.gpa$coords, ind=Caud2.Samples, Size=log(Caud2.gpa$Csize), lifestage=Caud2lifestage)
 
 Caud3.gpa <- gpagen(Caud3.LMs)
-Caud3_gdf <- geomorph.data.frame(Shape=Caud3.gpa$coords, ind=Caud3.Samples, Size=log(Caud3.gpa$Csize), lifestage=lifestage)
+Caud3_gdf <- geomorph.data.frame(Shape=Caud3.gpa$coords, ind=Caud3.Samples, Size=log(Caud3.gpa$Csize), lifestage=lifestage, subspecies = subspecies, habitat = habitat, ageGroup = ageGroup)
 
 
 #Principal Component Analysis (PCA) - Ordinate the dataset
@@ -220,47 +247,193 @@ Caud3.PCA<-gm.prcomp(Caud3.gpa$coords)
 summary(Caud3.PCA) 
 
 
-#Procrustes ANOVA
+#### Procrustes ANOVA ####
 
-Atlas_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Atlas.gpa$coords, ind=Atlas.Samples, Size=log(Atlas.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-Atlas_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=Atlas_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(Atlas_proc_ANOVA)
+## Atlas
+#Atlas_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Atlas.gpa$coords, ind=Atlas.Samples, Size=log(Atlas.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
+Atlas_proc_ANOVA_m0<-procD.lm(Shape~1, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Atlas_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Atlas_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Atlas_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Atlas_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Atlas_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
 
-T1_proc_ANOVA_GDF<-geomorph.data.frame(Shape=T1.gpa$coords, ind=T1.Samples, Size=log(T1.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-T1_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=T1_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(T1_proc_ANOVA)
+anova(Atlas_proc_ANOVA_m4, Atlas_proc_ANOVA_m5) #comparisons show that all terms in m5 are needed
 
-T4_proc_ANOVA_GDF<-geomorph.data.frame(Shape=T4.gpa$coords, ind=T4.Samples, Size=log(T4.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-T4_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=T4_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(T4_proc_ANOVA)
+# Pairwise tests, using pairwise function from the RRPP package
+# comparing Nvl and Nvp 
+Atlas_gdf_gp_subspecies <- interaction(Atlas_gdf$habitat, Atlas_gdf$ageGroup, Atlas_gdf$subspecies) 
+Atlas_proc_ANOVA_PW_subspecies <- pairwise(Atlas_proc_ANOVA_m5, groups =Atlas_gdf_gp_subspecies, covariate = Atlas_gdf$Size)
+summary(Atlas_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
 
-T7_proc_ANOVA_GDF<-geomorph.data.frame(Shape=T7.gpa$coords, ind=T7.Samples, Size=log(T7.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-T7_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=T7_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(T7_proc_ANOVA)
+Atlas_gdf_gp <- interaction(Atlas_gdf$habitat, Atlas_gdf$ageGroup) 
+Atlas_proc_ANOVA_PW <- pairwise(Atlas_proc_ANOVA_m5, groups =Atlas_gdf_gp, covariate = Atlas_gdf$Size)
+summary(Atlas_proc_ANOVA_PW)
+Atlas_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(Atlas_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
 
-T10_proc_ANOVA_GDF<-geomorph.data.frame(Shape=T10.gpa$coords, ind=T10.Samples, Size=log(T10.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-T10_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=T10_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(T10_proc_ANOVA)
 
-T13_proc_ANOVA_GDF<-geomorph.data.frame(Shape=T13.gpa$coords, ind=T13.Samples, Size=log(T13.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-T13_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=T13_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(T13_proc_ANOVA)
+## T1
+#T1_proc_ANOVA_GDF<-geomorph.data.frame(Shape=T1.gpa$coords, ind=T1.Samples, Size=log(T1.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
+T1_proc_ANOVA_m0<-procD.lm(Shape~1, data=T1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T1_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=T1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T1_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=T1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T1_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=T1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T1_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=T1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T1_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=T1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
 
-Sacral_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Sacral.gpa$coords, ind=Sacral.Samples, Size=log(Sacral.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-Sacral_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=Sacral_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(Sacral_proc_ANOVA)
+anova(T1_proc_ANOVA_m4, T1_proc_ANOVA_m5)
 
-Caud1_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Caud1.gpa$coords, ind=Caud1.Samples, Size=log(Caud1.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-Caud1_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=Caud1_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(Caud1_proc_ANOVA)
+T1_gdf_gp_subspecies <- interaction(T1_gdf$habitat, T1_gdf$ageGroup, T1_gdf$subspecies) 
+T1_proc_ANOVA_PW_subspecies <- pairwise(T1_proc_ANOVA_m5, groups =T1_gdf_gp_subspecies, covariate = T1_gdf$Size)
+summary(T1_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
 
+T1_gdf_gp <- interaction(T1_gdf$habitat, T1_gdf$ageGroup) 
+T1_proc_ANOVA_PW <- pairwise(T1_proc_ANOVA_m5, groups =T1_gdf_gp, covariate = T1_gdf$Size)
+summary(T1_proc_ANOVA_PW)
+T1_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(T1_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
+##T4
+#T4_proc_ANOVA_GDF<-geomorph.data.frame(Shape=T4.gpa$coords, ind=T4.Samples, Size=log(T4.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
+T4_proc_ANOVA_m0<-procD.lm(Shape~1, data=T4_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T4_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=T4_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T4_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=T4_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T4_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=T4_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T4_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=T4_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T4_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=T4_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+
+anova(T4_proc_ANOVA_m4, T4_proc_ANOVA_m5)
+
+T4_gdf_gp_subspecies <- interaction(T4_gdf$habitat, T4_gdf$ageGroup, T4_gdf$subspecies) 
+T4_proc_ANOVA_PW_subspecies <- pairwise(T4_proc_ANOVA_m5, groups =T4_gdf_gp_subspecies, covariate = T4_gdf$Size)
+summary(T4_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
+
+T4_gdf_gp <- interaction(T4_gdf$habitat, T4_gdf$ageGroup) 
+T4_proc_ANOVA_PW <- pairwise(T4_proc_ANOVA_m5, groups =T4_gdf_gp, covariate = T4_gdf$Size)
+summary(T4_proc_ANOVA_PW)
+T4_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(T4_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
+## T7
+T7_proc_ANOVA_m0<-procD.lm(Shape~1, data=T7_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T7_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=T7_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T7_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=T7_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T7_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=T7_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T7_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=T7_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T7_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=T7_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+
+anova(T7_proc_ANOVA_m4, T7_proc_ANOVA_m5) 
+
+T7_gdf_gp_subspecies <- interaction(T7_gdf$habitat, T7_gdf$ageGroup, T7_gdf$subspecies) 
+T7_proc_ANOVA_PW_subspecies <- pairwise(T7_proc_ANOVA_m5, groups =T7_gdf_gp_subspecies, covariate = T7_gdf$Size)
+summary(T7_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
+
+T7_gdf_gp <- interaction(T7_gdf$habitat, T7_gdf$ageGroup) 
+T7_proc_ANOVA_PW <- pairwise(T7_proc_ANOVA_m5, groups =T7_gdf_gp, covariate = T7_gdf$Size)
+summary(T7_proc_ANOVA_PW)
+T7_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(T7_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
+## T10
+T10_proc_ANOVA_m0<-procD.lm(Shape~1, data=T10_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T10_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=T10_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T10_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=T10_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T10_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=T10_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T10_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=T10_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T10_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=T10_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+
+anova(T10_proc_ANOVA_m4, T10_proc_ANOVA_m5)
+
+T10_gdf_gp_subspecies <- interaction(T10_gdf$habitat, T10_gdf$ageGroup, T10_gdf$subspecies) 
+T10_proc_ANOVA_PW_subspecies <- pairwise(T10_proc_ANOVA_m5, groups =T10_gdf_gp_subspecies, covariate = T10_gdf$Size)
+summary(T10_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
+
+T10_gdf_gp <- interaction(T10_gdf$habitat, T10_gdf$ageGroup) 
+T10_proc_ANOVA_PW <- pairwise(T10_proc_ANOVA_m5, groups =T10_gdf_gp, covariate = T10_gdf$Size)
+summary(T10_proc_ANOVA_PW)
+T10_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(T10_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
+# T13
+T13_proc_ANOVA_m0<-procD.lm(Shape~1, data=T13_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T13_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=T13_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T13_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=T13_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T13_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=T13_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T13_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=T13_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+T13_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=T13_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+
+anova(T13_proc_ANOVA_m4, T13_proc_ANOVA_m5)
+
+T13_gdf_gp_subspecies <- interaction(T13_gdf$habitat, T13_gdf$ageGroup, T13_gdf$subspecies) 
+T13_proc_ANOVA_PW_subspecies <- pairwise(T13_proc_ANOVA_m5, groups =T13_gdf_gp_subspecies, covariate = T13_gdf$Size)
+summary(T13_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
+
+T13_gdf_gp <- interaction(T13_gdf$habitat, T13_gdf$ageGroup) 
+T13_proc_ANOVA_PW <- pairwise(T13_proc_ANOVA_m5, groups =T13_gdf_gp, covariate = T13_gdf$Size)
+summary(T13_proc_ANOVA_PW)
+T13_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(T13_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
+# Sacral
+Sacral_proc_ANOVA_m0<-procD.lm(Shape~1, data=Sacral_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Sacral_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=Sacral_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Sacral_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=Sacral_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Sacral_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=Sacral_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Sacral_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=Sacral_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Sacral_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=Sacral_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+
+anova(Sacral_proc_ANOVA_m4, Sacral_proc_ANOVA_m5)
+
+Sacral_gdf_gp_subspecies <- interaction(Sacral_gdf$habitat, Sacral_gdf$ageGroup, Sacral_gdf$subspecies) 
+Sacral_proc_ANOVA_PW_subspecies <- pairwise(Sacral_proc_ANOVA_m5, groups =Sacral_gdf_gp_subspecies, covariate = Sacral_gdf$Size)
+summary(Sacral_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
+
+Sacral_gdf_gp <- interaction(Sacral_gdf$habitat, Sacral_gdf$ageGroup) 
+Sacral_proc_ANOVA_PW <- pairwise(Sacral_proc_ANOVA_m5, groups =Sacral_gdf_gp, covariate = Sacral_gdf$Size)
+summary(Sacral_proc_ANOVA_PW)
+Sacral_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(Sacral_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
+# Caud1
+#Caud1_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Caud1.gpa$coords, ind=Caud1.Samples, Size=log(Caud1.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
+Caud1_proc_ANOVA_m0<-procD.lm(Shape~1, data=Caud1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud1_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=Caud1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud1_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=Caud1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud1_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=Caud1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud1_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=Caud1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud1_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=Caud1_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+
+anova(Caud1_proc_ANOVA_m4, Caud1_proc_ANOVA_m5)
+
+Caud1_gdf_gp_subspecies <- interaction(Caud1_gdf$habitat, Caud1_gdf$ageGroup, Caud1_gdf$subspecies) 
+Caud1_proc_ANOVA_PW_subspecies <- pairwise(Caud1_proc_ANOVA_m5, groups =Caud1_gdf_gp_subspecies, covariate = Caud1_gdf$Size)
+summary(Caud1_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
+
+Caud1_gdf_gp <- interaction(Caud1_gdf$habitat, Caud1_gdf$ageGroup) 
+Caud1_proc_ANOVA_PW <- pairwise(Caud1_proc_ANOVA_m5, groups =Caud1_gdf_gp, covariate = Caud1_gdf$Size)
+summary(Caud1_proc_ANOVA_PW)
+Caud1_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(Caud1_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
+### Need to add habitat and ageGroup columns for Caud2 analyses
 Caud2_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Caud2.gpa$coords, ind=Caud2.Samples, Size=log(Caud2.gpa$Csize), lifestage=Caud2lifestage, subspecies=Caud2subspecies)
 Caud2_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=Caud2_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
 anova(Caud2_proc_ANOVA)
 
-Caud3_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Caud3.gpa$coords, ind=Caud3.Samples, Size=log(Caud3.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
-Caud3_proc_ANOVA<-procD.lm(Shape~lifestage*subspecies+Size, data=Caud3_proc_ANOVA_GDF, iter = 9999, RRPP = TRUE, print.progress = FALSE)
-anova(Caud3_proc_ANOVA)
+
+# Caud3
+#Caud3_proc_ANOVA_GDF<-geomorph.data.frame(Shape=Caud3.gpa$coords, ind=Caud3.Samples, Size=log(Caud3.gpa$Csize), lifestage=lifestage, subspecies=subspecies)
+Caud3_proc_ANOVA_m0<-procD.lm(Shape~1, data=Caud3_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud3_proc_ANOVA_m1<-procD.lm(Shape~habitat, data=Caud3_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud3_proc_ANOVA_m2<-procD.lm(Shape~ageGroup, data=Caud3_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud3_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=Caud3_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud3_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=Caud3_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+Caud3_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=Caud3_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
+
+anova(Caud3_proc_ANOVA_m4, Caud3_proc_ANOVA_m5)
+
+Caud3_gdf_gp_subspecies <- interaction(Caud3_gdf$habitat, Caud3_gdf$ageGroup, Caud3_gdf$subspecies) 
+Caud3_proc_ANOVA_PW_subspecies <- pairwise(Caud3_proc_ANOVA_m5, groups =Caud3_gdf_gp_subspecies, covariate = Caud3_gdf$Size)
+summary(Caud3_proc_ANOVA_PW_subspecies) # results show that the aquatic adults (paedomorphs) of Nvl and Nvp are not significantly different
+
+Caud3_gdf_gp <- interaction(Caud3_gdf$habitat, Caud3_gdf$ageGroup) 
+Caud3_proc_ANOVA_PW <- pairwise(Caud3_proc_ANOVA_m5, groups =Caud3_gdf_gp, covariate = Caud3_gdf$Size)
+summary(Caud3_proc_ANOVA_PW)
+Caud3_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(Caud3_proc_ANOVA_PW)$summary.table, digits = 3)), rows = row.names(summary(Atlas_proc_ANOVA_PW)$summary.table))
+
 
 
 #Canonical Variate Analysis (CVA) + Leave One Out Cross Validation (LOOCV)
@@ -421,6 +594,7 @@ Caud3_LDA_LOOCV_cm_table
 
 
 #Morphological Disparity - Calculate Partial Disparities
+# Reveals which subgroups contribute the most towards the total disparity
 
 Atlas_m.d<-morphol.disparity(Atlas_gdf$Shape~1, groups=lifestage, partial=TRUE, data=Atlas_gdf, iter=9999, print.progress = FALSE)
 Atlas_m.d
@@ -475,8 +649,22 @@ Caud3_m.d_groups
 
 
 #Total Morphological Disparity
-Atlas_m.d<-morphol.disparity(Atlas_gdf$Shape~1, groups=NULL, data=Atlas_gdf, iter=9999, print.progress = FALSE)
-Atlas_m.d
+
+# Morphological disparity for entire data set
+Atlas_m.dt<-morphol.disparity(Atlas_gdf$Shape~1, groups=NULL, data=Atlas_gdf, iter=9999, print.progress = FALSE)
+Atlas_m.dt
+# Morphological disparity for entire data set, accounting for allometry
+Atlas_m.dt2<-morphol.disparity(Atlas_gdf$Shape~Size, groups=NULL, data=Atlas_gdf, iter=9999, print.progress = FALSE)
+
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Atlas_m.dt3 <- morphol.disparity(Atlas_gdf$Shape~Size, groups= ~lifestage*subspecies, data = Atlas_gdf, print.progress = FALSE)
+Atlas_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+headerNames <- c('Adult: semi-aquatic', 'Juvenile: terrestrial', 'Juvenile: aquatic', 'Adult: aquatic', 'Adult: aquatic')
+Atlas_m.dt3_table <- ggtexttable(Atlas_m.d3$PV.dist)
+
 
 T1_m.d<-morphol.disparity(T1_gdf$Shape~1, groups=NULL, data=T1_gdf, iter=9999, print.progress = FALSE)
 T1_m.d
