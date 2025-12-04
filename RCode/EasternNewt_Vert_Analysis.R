@@ -258,6 +258,7 @@ Atlas_proc_ANOVA_m3<-procD.lm(Shape~habitat + ageGroup, data=Atlas_gdf, iter = 9
 Atlas_proc_ANOVA_m4<-procD.lm(Shape~habitat + ageGroup + Size, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
 Atlas_proc_ANOVA_m5<-procD.lm(Shape~habitat + ageGroup*Size, data=Atlas_gdf, iter = 9999, RRPP = TRUE, print.progress = FALSE)
 
+
 anova(Atlas_proc_ANOVA_m4, Atlas_proc_ANOVA_m5) #comparisons show that all terms in m5 are needed
 
 # Pairwise tests, using pairwise function from the RRPP package
@@ -436,7 +437,7 @@ Caud3_proc_ANOVA_PW_table <- ggtexttable(format(round(summary(Caud3_proc_ANOVA_P
 
 
 
-#Canonical Variate Analysis (CVA) + Leave One Out Cross Validation (LOOCV)
+#### Canonical Variate Analysis (CVA) + Leave One Out Cross Validation (LOOCV) ####
 
 #Atlas
 
@@ -593,63 +594,177 @@ Caud3_LDA_LOOCV_cm_table
 
 
 
-#Morphological Disparity - Calculate Partial Disparities
+#### Morphological Disparity - Calculate Partial Disparities ####
 # Reveals which subgroups contribute the most towards the total disparity
 
+headerNames <- c('Adult - Semi-aquatic', 'Juvenile: Terrestrial', 'Juvenile: Aquatic', 'Adult: Aquatic (Nvl)', 'Adult: Aquatic (Nvp)')
+
+## Atlas
 Atlas_m.d<-morphol.disparity(Atlas_gdf$Shape~1, groups=lifestage, partial=TRUE, data=Atlas_gdf, iter=9999, print.progress = FALSE)
 Atlas_m.d
 Atlas_m.d_groups<-Atlas_m.d$Procrustes.var
 Atlas_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Atlas_m.d3 <- morphol.disparity(Atlas_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = Atlas_gdf, print.progress = FALSE)
+Atlas_m.d3
+
+Atlas_m.d3_PV <- ifelse(Atlas_m.d3$PV.dist.Pval<0.05, paste(round(Atlas_m.d3$PV.dist,3), "*", sep=""), round(Atlas_m.d3$PV.dist,3))
+Atlas_m.d3_table <- ggtexttable(Atlas_m.d3_PV, cols = headerNames, rows = headerNames)
+Atlas_m.d3_table
+
+## T1
 T1_m.d<-morphol.disparity(T1_gdf$Shape~1, groups=lifestage, partial=TRUE, data=T1_gdf, iter=9999, print.progress = FALSE)
 T1_m.d
 T1_m.d_groups<-T1_m.d$Procrustes.var
 T1_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T1_m.d3 <- morphol.disparity(T1_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = T1_gdf, print.progress = FALSE)
+T1_m.d3
+
+T1_m.d3_PV <- ifelse(T1_m.d3$PV.dist.Pval<0.05, paste(round(T1_m.d3$PV.dist,3), "*", sep=""), round(T1_m.d3$PV.dist,3))
+T1_m.d3_table <- ggtexttable(T1_m.d3_PV, cols = headerNames, rows = headerNames)
+T1_m.d3_table
+
+## T4
 T4_m.d<-morphol.disparity(T4_gdf$Shape~1, groups=lifestage, partial=TRUE, data=T4_gdf, iter=9999, print.progress = FALSE)
 T4_m.d
 T4_m.d_groups<-T4_m.d$Procrustes.var
 T4_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T4_m.d3 <- morphol.disparity(T4_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = T4_gdf, print.progress = FALSE)
+T4_m.d3
+
+T4_m.d3_PV <- ifelse(T4_m.d3$PV.dist.Pval<0.05, paste(round(T4_m.d3$PV.dist,3), "*", sep=""), round(T4_m.d3$PV.dist,3))
+T4_m.d3_table <- ggtexttable(T4_m.d3_PV, cols = headerNames, rows = headerNames)
+T4_m.d3_table
+
+# T7
 T7_m.d<-morphol.disparity(T7_gdf$Shape~1, groups=lifestage, partial=TRUE, data=T7_gdf, iter=9999, print.progress = FALSE)
 T7_m.d
 T7_m.d_groups<-T7_m.d$Procrustes.var
 T7_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T7_m.d3 <- morphol.disparity(T7_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = T7_gdf, print.progress = FALSE)
+T7_m.d3
+
+T7_m.d3_PV <- ifelse(T7_m.d3$PV.dist.Pval<0.05, paste(round(T7_m.d3$PV.dist,3), "*", sep=""), round(T7_m.d3$PV.dist,3))
+T7_m.d3_table <- ggtexttable(T7_m.d3_PV, cols = headerNames, rows = headerNames)
+T7_m.d3_table
+
+# T10
 T10_m.d<-morphol.disparity(T10_gdf$Shape~1, groups=lifestage, partial=TRUE, data=T10_gdf, iter=9999, print.progress = FALSE)
 T10_m.d
 T10_m.d_groups<-T10_m.d$Procrustes.var
 T10_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T10_m.d3 <- morphol.disparity(T10_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = T10_gdf, print.progress = FALSE)
+T10_m.d3
+
+T10_m.d3_PV <- ifelse(T10_m.d3$PV.dist.Pval<0.05, paste(round(T10_m.d3$PV.dist,3), "*", sep=""), round(T10_m.d3$PV.dist,3))
+T10_m.d3_table <- ggtexttable(T10_m.d3_PV, cols = headerNames, rows = headerNames)
+T10_m.d3_table
+
+# T13
 T13_m.d<-morphol.disparity(T13_gdf$Shape~1, groups=lifestage, partial=TRUE, data=T13_gdf, iter=9999, print.progress = FALSE)
 T13_m.d
 T13_m.d_groups<-T13_m.d$Procrustes.var
 T13_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T13_m.d3 <- morphol.disparity(T13_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = T13_gdf, print.progress = FALSE)
+T13_m.d3
+
+T13_m.d3_PV <- ifelse(T13_m.d3$PV.dist.Pval<0.05, paste(round(T13_m.d3$PV.dist,3), "*", sep=""), round(T13_m.d3$PV.dist,3))
+T13_m.d3_table <- ggtexttable(T13_m.d3_PV, cols = headerNames, rows = headerNames)
+T13_m.d3_table
+
+# Sacral
 Sacral_m.d<-morphol.disparity(Sacral_gdf$Shape~1, groups=lifestage, partial=TRUE, data=Sacral_gdf, iter=9999, print.progress = FALSE)
 Sacral_m.d
 Sacral_m.d_groups<-Sacral_m.d$Procrustes.var
 Sacral_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Sacral_m.d3 <- morphol.disparity(Sacral_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = Sacral_gdf, print.progress = FALSE)
+Sacral_m.d3
+
+Sacral_m.d3_PV <- ifelse(Sacral_m.d3$PV.dist.Pval<0.05, paste(round(Sacral_m.d3$PV.dist,3), "*", sep=""), round(Sacral_m.d3$PV.dist,3))
+Sacral_m.d3_table <- ggtexttable(Sacral_m.d3_PV, cols = headerNames, rows = headerNames)
+Sacral_m.d3_table
+
+# Caudal 1
 Caud1_m.d<-morphol.disparity(Caud1_gdf$Shape~1, groups=lifestage, partial=TRUE, data=Caud1_gdf, iter=9999, print.progress = FALSE)
 Caud1_m.d
 Caud1_m.d_groups<-Caud1_m.d$Procrustes.var
 Caud1_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Caud1_m.d3 <- morphol.disparity(Caud1_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = Caud1_gdf, print.progress = FALSE)
+Caud1_m.d3
+
+Caud1_m.d3_PV <- ifelse(Caud1_m.d3$PV.dist.Pval<0.05, paste(round(Caud1_m.d3$PV.dist,3), "*", sep=""), round(Caud1_m.d3$PV.dist,3))
+Caud1_m.d3_table <- ggtexttable(Caud1_m.d3_PV, cols = headerNames, rows = headerNames)
+Caud1_m.d3_table
+
+# Caud2
 Caud2_m.d<-morphol.disparity(Caud2_gdf$Shape~1, groups=Caud2lifestage, partial=TRUE, data=Caud2_gdf, iter=9999, print.progress = FALSE)
 Caud2_m.d
 Caud2_m.d_groups<-Caud2_m.d$Procrustes.var
 Caud2_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Caud2_m.d3 <- morphol.disparity(Caud2_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = Caud2_gdf, print.progress = FALSE)
+Caud2_m.d3
+
+Caud2_m.d3_PV <- ifelse(Caud2_m.d3$PV.dist.Pval<0.05, paste(round(Caud2_m.d3$PV.dist,3), "*", sep=""), round(Caud2_m.d3$PV.dist,3))
+Caud2_m.d3_table <- ggtexttable(Caud2_m.d3_PV, cols = headerNames, rows = headerNames)
+Caud2_m.d3_table
+
+# Caudal 3
 Caud3_m.d<-morphol.disparity(Caud3_gdf$Shape~1, groups=lifestage, partial=TRUE, data=Caud3_gdf, iter=9999, print.progress = FALSE)
 Caud3_m.d
 Caud3_m.d_groups<-Caud3_m.d$Procrustes.var
 Caud3_m.d_groups
 
+# Partial Morphological disparity for entire data set using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Caud3_m.d3 <- morphol.disparity(Caud3_gdf$Shape~1, groups= ~habitat*ageGroup*subspecies, data = Caud3_gdf, print.progress = FALSE)
+Caud3_m.d3
+
+Caud3_m.d3_PV <- ifelse(Caud3_m.d3$PV.dist.Pval<0.05, paste(round(Caud3_m.d3$PV.dist,3), "*", sep=""), round(Caud3_m.d3$PV.dist,3))
+Caud3_m.d3_table <- ggtexttable(Caud3_m.d3_PV, cols = headerNames, rows = headerNames)
+Caud3_m.d3_table
 
 
-#Total Morphological Disparity
 
+MorphoDisparity_partial_tables1 <- ggarrange(Atlas_m.d3_table, T1_m.d3_table, T4_m.d3_table, T7_m.d3_table, 
+                                           nrow = 4, ncol = 1)
+
+MorphoDisparity_partial_tables2 <- ggarrange(T10_m.d3_table, T13_m.d3_table, Sacral_m.d3_table, Caud1_m.d3_table, 
+                                           nrow = 4, ncol = 1)
+
+MorphoDisparity_partial_tables3 <- ggarrange(Caud2_m.d3_table, Caud3_m.d3_table, 
+                                           nrow = 4, ncol = 1)
+
+
+
+#### Total Morphological Disparity ####
+
+## Atlas
 # Morphological disparity for entire data set
 Atlas_m.dt<-morphol.disparity(Atlas_gdf$Shape~1, groups=NULL, data=Atlas_gdf, iter=9999, print.progress = FALSE)
 Atlas_m.dt
@@ -658,39 +773,159 @@ Atlas_m.dt2<-morphol.disparity(Atlas_gdf$Shape~Size, groups=NULL, data=Atlas_gdf
 
 # Morphological disparity for entire data set while accounting for allometry and using group means
 # including pairwise comparisons to determine which group differences are "significant"
-Atlas_m.dt3 <- morphol.disparity(Atlas_gdf$Shape~Size, groups= ~lifestage*subspecies, data = Atlas_gdf, print.progress = FALSE)
+Atlas_m.dt3 <- morphol.disparity(Atlas_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = Atlas_gdf, print.progress = FALSE)
 Atlas_m.dt3
 
 # Create table of morphological disparity with pairwise comparisons
-headerNames <- c('Adult: semi-aquatic', 'Juvenile: terrestrial', 'Juvenile: aquatic', 'Adult: aquatic', 'Adult: aquatic')
-Atlas_m.dt3_table <- ggtexttable(Atlas_m.d3$PV.dist)
+Atlas_m.dt3_PV <- ifelse(Atlas_m.dt3$PV.dist.Pval<0.05, paste(round(Atlas_m.dt3$PV.dist,3), "*", sep=""), round(Atlas_m.dt3$PV.dist,3))
+Atlas_m.dt3_table <- ggtexttable(Atlas_m.dt3_PV, cols = headerNames, rows = headerNames)
+Atlas_m.dt3_table
 
-
+##T1
 T1_m.d<-morphol.disparity(T1_gdf$Shape~1, groups=NULL, data=T1_gdf, iter=9999, print.progress = FALSE)
 T1_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T1_m.dt3 <- morphol.disparity(T1_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = T1_gdf, print.progress = FALSE)
+T1_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+T1_m.dt3_PV <- ifelse(T1_m.dt3$PV.dist.Pval<0.05, paste(round(T1_m.dt3$PV.dist,3), "*", sep=""), round(T1_m.dt3$PV.dist,3))
+T1_m.dt3_table <- ggtexttable(T1_m.dt3_PV, cols = headerNames, rows = headerNames)
+T1_m.dt3_table
+
+
+## T4
 T4_m.d<-morphol.disparity(T4_gdf$Shape~1, groups=NULL, data=T4_gdf, iter=9999, print.progress = FALSE)
 T4_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T4_m.dt3 <- morphol.disparity(T4_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = T4_gdf, print.progress = FALSE)
+T4_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+T4_m.dt3_PV <- ifelse(T4_m.dt3$PV.dist.Pval<0.05, paste(round(T4_m.dt3$PV.dist,3), "*", sep=""), round(T4_m.dt3$PV.dist,3))
+T4_m.dt3_table <- ggtexttable(T4_m.dt3_PV, cols = headerNames, rows = headerNames)
+T4_m.dt3_table
+
+## T7
 T7_m.d<-morphol.disparity(T7_gdf$Shape~1, groups=NULL, data=T7_gdf, iter=9999, print.progress = FALSE)
 T7_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T7_m.dt3 <- morphol.disparity(T7_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = T7_gdf, print.progress = FALSE)
+T7_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+T7_m.dt3_PV <- ifelse(T7_m.dt3$PV.dist.Pval<0.05, paste(round(T7_m.dt3$PV.dist,3), "*", sep=""), round(T7_m.dt3$PV.dist,3))
+T7_m.dt3_table <- ggtexttable(T7_m.dt3_PV, cols = headerNames, rows = headerNames)
+T7_m.dt3_table
+
+## T10
 T10_m.d<-morphol.disparity(T10_gdf$Shape~1, groups=NULL, data=T10_gdf, iter=9999, print.progress = FALSE)
 T10_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T10_m.dt3 <- morphol.disparity(T10_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = T10_gdf, print.progress = FALSE)
+T10_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+T10_m.dt3_PV <- ifelse(T10_m.dt3$PV.dist.Pval<0.05, paste(round(T10_m.dt3$PV.dist,3), "*", sep=""), round(T10_m.dt3$PV.dist,3))
+T10_m.dt3_table <- ggtexttable(T10_m.dt3_PV, cols = headerNames, rows = headerNames)
+T10_m.dt3_table
+
+## T13
 T13_m.d<-morphol.disparity(T13_gdf$Shape~1, groups=NULL, data=T13_gdf, iter=9999, print.progress = FALSE)
 T13_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+T13_m.dt3 <- morphol.disparity(T13_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = T13_gdf, print.progress = FALSE)
+T13_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+T13_m.dt3_PV <- ifelse(T13_m.dt3$PV.dist.Pval<0.05, paste(round(T13_m.dt3$PV.dist,3), "*", sep=""), round(T13_m.dt3$PV.dist,3))
+T13_m.dt3_table <- ggtexttable(T13_m.dt3_PV, cols = headerNames, rows = headerNames)
+T13_m.dt3_table
+
+## Sacral
 Sacral_m.d<-morphol.disparity(Sacral_gdf$Shape~1, groups=NULL, data=Sacral_gdf, iter=9999, print.progress = FALSE)
 Sacral_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Sacral_m.dt3 <- morphol.disparity(Sacral_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = Sacral_gdf, print.progress = FALSE)
+Sacral_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+Sacral_m.dt3_PV <- ifelse(Sacral_m.dt3$PV.dist.Pval<0.05, paste(round(Sacral_m.dt3$PV.dist,3), "*", sep=""), round(Sacral_m.dt3$PV.dist,3))
+Sacral_m.dt3_table <- ggtexttable(Sacral_m.dt3_PV, cols = headerNames, rows = headerNames)
+Sacral_m.dt3_table
+
+## Caudal 1
 Caud1_m.d<-morphol.disparity(Caud1_gdf$Shape~1, groups=NULL, data=Caud1_gdf, iter=9999, print.progress = FALSE)
 Caud1_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Caud1_m.dt3 <- morphol.disparity(Caud1_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = Caud1_gdf, print.progress = FALSE)
+Caud1_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+Caud1_m.dt3_PV <- ifelse(Caud1_m.dt3$PV.dist.Pval<0.05, paste(round(Caud1_m.dt3$PV.dist,3), "*", sep=""), round(Caud1_m.dt3$PV.dist,3))
+Caud1_m.dt3_table <- ggtexttable(Caud1_m.dt3_PV, cols = headerNames, rows = headerNames)
+Caud1_m.dt3_table
+
+## Caudal 2
 Caud2_m.d<-morphol.disparity(Caud2_gdf$Shape~1, groups=NULL, data=Caud2_gdf, iter=9999, print.progress = FALSE)
 Caud2_m.d
 
+# # Morphological disparity for entire data set while accounting for allometry and using group means
+# # including pairwise comparisons to determine which group differences are "significant"
+# Caud2_m.dt3 <- morphol.disparity(Caud2_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = Caud2_gdf, print.progress = FALSE)
+# Caud2_m.dt3
+# 
+# # Create table of morphological disparity with pairwise comparisons
+# Caud2_m.dt3_PV <- ifelse(Caud2_m.dt3$PV.dist.Pval<0.05, paste(round(Caud2_m.dt3$PV.dist,3), "*", sep=""), round(Caud2_m.dt3$PV.dist,3))
+# Caud2_m.dt3_table <- ggtexttable(Caud2_m.dt3_PV, cols = headerNames, rows = headerNames)
+# Caud2_m.dt3_table
+
+## Caudal 3
 Caud3_m.d<-morphol.disparity(Caud3_gdf$Shape~1, groups=NULL, data=Caud3_gdf, iter=9999, print.progress = FALSE)
 Caud3_m.d
 
+# Morphological disparity for entire data set while accounting for allometry and using group means
+# including pairwise comparisons to determine which group differences are "significant"
+Caud3_m.dt3 <- morphol.disparity(Caud3_gdf$Shape~Size, groups= ~habitat*ageGroup*subspecies, data = Caud3_gdf, print.progress = FALSE)
+Caud3_m.dt3
+
+# Create table of morphological disparity with pairwise comparisons
+Caud3_m.dt3_PV <- ifelse(Caud3_m.dt3$PV.dist.Pval<0.05, paste(round(Caud3_m.dt3$PV.dist,3), "*", sep=""), round(Caud3_m.dt3$PV.dist,3))
+Caud3_m.dt3_table <- ggtexttable(Caud3_m.dt3_PV, cols = headerNames, rows = headerNames)
+Caud3_m.dt3_table
+
+MorphoDisparity_total_tables1 <- ggarrange(Atlas_m.dt3_table, T1_m.dt3_table, T4_m.dt3_table, T7_m.dt3_table, 
+                                    nrow = 4, ncol = 1)
+
+MorphoDisparity_total_tables2 <- ggarrange(T10_m.dt3_table, T13_m.dt3_table, Sacral_m.dt3_table, Caud1_m.dt3_table, 
+                                    nrow = 4, ncol = 1)
+
+MorphoDisparity_total_tables3 <- ggarrange(Caud2_m.dt3_table, Caud3_m.dt3_table, 
+                                     nrow = 4, ncol = 1)
+
+
+#### Save Pairwise Morphological Disparity tables ####
+
+setwd("../../../../")
+setwd("./Figures")
+
+ggexport(MorphoDisparity_partial_tables1, MorphoDisparity_partial_tables2, filename = "MorphologicalDisparity_partial_tables.pdf",
+         width = 11, height = 8.5) # Adjust dimensions as needed
+
+ggexport(MorphoDisparity_total_tables1, MorphoDisparity_total_tables2, filename = "MorphologicalDisparity_total_tables.pdf",
+         width = 11, height = 8.5) # Adjust dimensions as needed
 
