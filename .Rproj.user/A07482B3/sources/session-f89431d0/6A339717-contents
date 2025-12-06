@@ -1,0 +1,14 @@
+
+
+
+#### Load libraries (and install, if needed) ####
+
+pkgs <- c('geomorph', 'SlicerMorphR', 'shapes', 'ellipsis', 'ggplot2',
+          'MASS', 'caret', 'patchwork', 'knitr', 'ggpubr', 'vegan')
+
+for (i in pkgs) {
+  if(!require(i, character.only = TRUE)) {
+    install.packages(i)
+    library(i)
+  }
+}
